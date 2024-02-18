@@ -1,0 +1,32 @@
+#+TITLE: Hardhack Muon Detector
+
+* Introduction :TOC:
+- [[#background][Background]]
+- [[#interface-board-examples][Interface Board Examples]]
+  - [[#heltec-wireless-stick-lite-v3-using-esphome][Heltec Wireless Stick Lite V3, using ESPHome]]
+
+* Background
+
+The Hardhack Muon Detector project has created a muon detector kit based on a
+coincidence detection circuit using twin Geiger–Müller tubes.
+
+The output is a 3.3V pulse, between 2.6 to 8 uS.
+
+This repository contains support code and documentation for connecting the sensor to the rest
+of the connencted world.
+
+* Interface Board Examples
+
+** Heltec Wireless Stick Lite V3, using ESPHome
+
+The Heltec Wireless Stick Lite V3 is based on the esp32-s3 microprocessor which
+includes Wireless and Bluetooth. The board also contains a LoRa transceiver for
+communication outside of Wifi range.
+
+Files
+- esphome/esp32s3-muon-detector.yaml :: Configuration file and program for the muon detector. 
+- esphome/secrets.yaml :: Contains Wifi, API,  Over the Air (OTA) update details. Edit these
+  to what you are using.
+
+This build requires that the ESPbuild system is installed and available.
+
