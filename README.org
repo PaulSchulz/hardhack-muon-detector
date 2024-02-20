@@ -23,7 +23,7 @@ The Heltec Wireless Stick Lite V3 is based on the esp32-s3 microprocessor which
 includes Wireless and Bluetooth. The board also contains a LoRa transceiver for
 communication outside of Wifi range.
 
-Files
+*** Files
 - esphome/esp32s3-muon-detector.yaml :: Configuration file and program for the muon detector. 
 - esphome/secrets.yaml :: Contains Wifi, API,  Over the Air (OTA) update details. Edit these
   to what you are using.

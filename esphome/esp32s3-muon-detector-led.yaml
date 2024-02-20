@@ -1,0 +1,189 @@
+substitutions:
+  udp_target: "10.1.1.255"
+  udp_port: "5000"
+  udp_message: "Ping"
+
+esphome:
+  name: esp32s3-muon-detector
+
+esp32:
+  #  board: heltec_wifi_lora_32_V3
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  #logs:
+  # sensor: none
+  # binary_sensor: none
+  # wifi: none
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+captive_portal:
+web_server:
+
+script:
+- id: send_udp
+  parameters:
+    msg: string
+    host: string
+    port: int
+  then:
+    - lambda: |-
+            int sock = ::socket(AF_INET, SOCK_DGRAM, 0);
+            struct sockaddr_in destination, source;
+
+            destination.sin_family = AF_INET;
+            destination.sin_port = htons(port);
+            destination.sin_addr.s_addr = inet_addr(host.c_str());
+
+            int n_bytes = ::sendto(sock, msg.c_str(), msg.length(), 0, reinterpret_cast<sockaddr*>(&destination), sizeof(destination));
+            ESP_LOGD("send", "Sent %s to %s:%d in %d bytes", msg.c_str(), host.c_str(), port, n_bytes);
+            ::close(sock);
+
+- id: trigger_event
+  then:
+    - lambda: |-
+        // Add one to the global integer
+        id(muon_counter_int) += 1;
+        // Force the sensor to publish a new state
+        id(muon_counter).publish_state(id(muon_counter_int));
+    - script.execute:
+        id: send_udp
+        msg: $udp_message
+        host: $udp_target
+        port: $udp_port
+    - light.addressable_set:
+        id: led_strip
+        range_from: 0
+        range_to: 1
+        red: 100%
+        green: 100%
+        blue: 100%
+  
+globals:
+  - id: muon_counter_int
+    type: int
+    restore_value: true
+    initial_value: '0'
+
+sensor:
+  - platform: template
+    name: "Muon Counter"
+    id: muon_counter
+    update_interval: never
+    accuracy_decimals: 0
+    state_class: total_increasing
+    lambda: return id(muon_counter_int);
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO1
+    name: "Muon Event"
+    on_press:
+      - script.execute:
+          id: trigger_event
+
+button:
+  - platform: template
+    id: button_test
+    name: "Event Test"
+    on_press:
+      - lambda: |-
+          // Add one to the global integer
+          id(muon_counter_int) += 1;
+          // Force the sensor to publish a new state
+          id(muon_counter).publish_state(id(muon_counter_int));
+          
+  - platform: template
+    id: button_udp_sender
+    name: "Send UDP Test"
+    on_press:
+      - script.execute:
+          id: send_udp
+          msg: $udp_message
+          host: $udp_target
+          port: $udp_port
+
+  - platform: template
+    id: button_led_test
+    name: "LED Test"
+    on_press:
+      - light.addressable_set:
+          id: led_strip
+          range_from: 0
+          range_to: 1
+          red: 50%
+          green: 50%
+          blue: 50%
+
+  - platform: template
+    id: button_event_test
+    name: "Trigger Event Test"
+    on_press:
+      - script.execute:
+          id: trigger_event
+          
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: RGB
+    pin: GPIO2
+    num_leds: 120
+    rmt_channel: 0
+    chipset: WS2812
+    name: "Light"
+    id: led_strip
+    default_transition_length: 0s
+    restore_mode: ALWAYS_ON
+    on_turn_on:
+      - light.turn_on:
+          id: led_strip
+          effect: "Shower"
+    # on_turn_on:
+    #   - light.effect: "Shower"
+    effects:
+      - addressable_scan:
+      - addressable_lambda:
+          name: "Off"
+          lambda: |-
+            it.all().fade_to_black(10);
+      - addressable_lambda:
+          name: "Shower"
+          update_interval: 16ms
+          lambda: |-
+            // it.size() - Number of LEDs
+            // it[num] - Access the LED at index num.
+            // Set the LED at num to the given r, g, b values
+            // it[num] = Color(r, g, b);
+            // Get the color at index num (Color instance)
+            // it[num].get();
+
+            // To reset static when stopping and starting the effect
+            // again you can use the initial_run variables
+            if (initial_run) {
+              // progress = 0;
+              it.all() = Color::BLACK;
+              // it[0] = Color::random_color();
+            }
+
+            // Example: Simple color wipe
+            for (int i = it.size() - 1; i > 0; i--) {
+              it[i] = it[i - 1].get();
+              it[i-1] = Color(0,0,0);
+            }
+
+            // Bonus: use .range() and .all() to set many LEDs without having to write a loop.
+            // it.range(0, 50) = Color::BLACK;
+            // it.all().fade_to_black(10);

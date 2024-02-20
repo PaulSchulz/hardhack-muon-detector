@@ -59,17 +59,6 @@ globals:
     restore_value: true
     initial_value: '0'
 
-binary_sensor:
-  - platform: gpio
-    pin: GPIO1
-    name: "Muon Event"
-    on_press:
-      lambda: |-
-        // Add one to the global integer
-        id(muon_counter_int) += 1;
-        // Force the sensor to publish a new state
-        id(muon_counter).publish_state(id(muon_counter_int));
-
 sensor:
   - platform: template
     name: "Muon Counter"
@@ -79,24 +68,45 @@ sensor:
     state_class: total_increasing
     lambda: return id(muon_counter_int);
 
-button:
-- platform: template
-  id: button_test
-  name: "Test Event"
-  on_press:
-    lambda: |-
-      // Add one to the global integer
-      id(muon_counter_int) += 1;
-      // Force the sensor to publish a new state
-      id(muon_counter).publish_state(id(muon_counter_int));
+binary_sensor:
+  - platform: gpio
+    pin: GPIO1
+    name: "Muon Event"
+    on_press:
+      - lambda: |-
+          // Add one to the global integer
+          id(muon_counter_int) += 1;
+          // Force the sensor to publish a new state
+          id(muon_counter).publish_state(id(muon_counter_int));
+      - script.execute:
+          id: send_udp
+          msg: $udp_message
+          host: $udp_target
+          port: $udp_port
 
-- platform: template
-  id: button_udp_sender
-  name: "Send UDP Command"
-  on_press:
-    - script.execute:
-        id: send_udp
-        msg: $udp_message
-        host: $udp_target
-        port: $udp_port
+button:
+  - platform: template
+    id: button_test
+    name: "Event Test"
+    on_press:
+      - lambda: |-
+          // Add one to the global integer
+          id(muon_counter_int) += 1;
+          // Force the sensor to publish a new state
+          id(muon_counter).publish_state(id(muon_counter_int));
+      - script.execute:
+          id: send_udp
+          msg: $udp_message
+          host: $udp_target
+          port: $udp_port
+          
+  - platform: template
+    id: button_udp_sender
+    name: "Send UDP Test"
+    on_press:
+      - script.execute:
+          id: send_udp
+          msg: $udp_message
+          host: $udp_target
+          port: $udp_port
 
