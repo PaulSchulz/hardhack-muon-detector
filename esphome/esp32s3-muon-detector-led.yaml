@@ -1,10 +1,20 @@
+# Hardhack: Cosmic Ray Muon Detector
 substitutions:
+  name: muon-detector
+  friendly_name: "Hardhack Muon Detector"
+  project_name: "hardhack.muon-detector"
+  project_version: "1.0"
+
   udp_target: "10.1.1.255"
   udp_port: "5000"
   udp_message: "Ping"
 
 esphome:
-  name: esp32s3-muon-detector
+  name: "${name}"
+  name_add_mac_suffix: true
+  project:
+    name: "${project_name}"
+    version: "${project_version}"
 
 esp32:
   #  board: heltec_wifi_lora_32_V3
@@ -14,10 +24,10 @@ esp32:
 
 # Enable logging
 logger:
-  #logs:
-  # sensor: none
-  # binary_sensor: none
-  # wifi: none
+  logs:
+    sensor: DEBUG
+    binary_sensor: DEBUG
+    wifi: DEBUG
 
 # Enable Home Assistant API
 api:
@@ -87,15 +97,16 @@ sensor:
     accuracy_decimals: 0
     state_class: total_increasing
     lambda: return id(muon_counter_int);
-
-binary_sensor:
-  - platform: gpio
-    pin: GPIO1
-    name: "Muon Event"
-    on_press:
+ 
+  - platform: pulse_meter
+    name: "Muon Event Rate"
+    pin: 
+      number: GPIO1
+      mode: input
+    on_value:
       - script.execute:
           id: trigger_event
-
+      
 button:
   - platform: template
     id: button_test
@@ -141,6 +152,7 @@ light:
     rgb_order: RGB
     pin: GPIO2
     num_leds: 120
+    # num_leds: 8
     rmt_channel: 0
     chipset: WS2812
     name: "Light"
@@ -151,8 +163,6 @@ light:
       - light.turn_on:
           id: led_strip
           effect: "Shower"
-    # on_turn_on:
-    #   - light.effect: "Shower"
     effects:
       - addressable_scan:
       - addressable_lambda:
