@@ -9,6 +9,8 @@ substitutions:
   udp_port: "5000"
   udp_message: "Ping"
 
+  led_strip_num: "10"
+
 esphome:
   name: "${name}"
   name_add_mac_suffix: true
@@ -151,7 +153,7 @@ light:
   - platform: esp32_rmt_led_strip
     rgb_order: RGB
     pin: GPIO2
-    num_leds: 120
+    num_leds: ${led_strip_num}
     # num_leds: 8
     rmt_channel: 0
     chipset: WS2812
