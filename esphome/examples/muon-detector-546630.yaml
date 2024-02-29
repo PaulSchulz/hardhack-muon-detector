@@ -1,19 +1,19 @@
 # Hardhack: Cosmic Ray Muon Detector
 substitutions:
-  name: muon-detector
+  name: muon-detector-546630
   friendly_name: "Hardhack Muon Detector"
   project_name: "hardhack.muon-detector"
   project_version: "1.0"
 
-  udp_target: "10.1.1.255"
-  udp_port: "5000"
+  udp_target: "192.168.1.255"
+  udp_port: "5072"
   udp_message: "Ping"
 
   led_strip_num: "10"
 
 esphome:
   name: "${name}"
-  name_add_mac_suffix: true
+  # name_add_mac_suffix: true
   project:
     name: "${project_name}"
     version: "${project_version}"
@@ -32,7 +32,6 @@ logger:
     binary_sensor: DEBUG
     wifi: DEBUG
 
-
 # Enable Home Assistant API
 api:
   encryption:
@@ -48,7 +47,7 @@ wifi:
 captive_portal:
 web_server:
   local: true
-
+  
 script:
 - id: send_udp
   parameters:

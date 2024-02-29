@@ -1,19 +1,19 @@
 # Hardhack: Cosmic Ray Muon Detector
 substitutions:
-  name: muon-detector
+  name: muon-detector-535d00
   friendly_name: "Hardhack Muon Detector"
   project_name: "hardhack.muon-detector"
   project_version: "1.0"
 
-  udp_target: "10.1.1.255"
-  udp_port: "5000"
+  udp_target: "192.168.1.255"
+  udp_port: "5070"
   udp_message: "Ping"
 
   led_strip_num: "10"
 
 esphome:
   name: "${name}"
-  name_add_mac_suffix: true
+  #  name_add_mac_suffix: true
   project:
     name: "${project_name}"
     version: "${project_version}"
@@ -31,7 +31,6 @@ logger:
     sensor: DEBUG
     binary_sensor: DEBUG
     wifi: DEBUG
-
 
 # Enable Home Assistant API
 api:
@@ -75,11 +74,11 @@ script:
         id(muon_counter_int) += 1;
         // Force the sensor to publish a new state
         id(muon_counter).publish_state(id(muon_counter_int));
-    - script.execute:
-        id: send_udp
-        msg: $udp_message
-        host: $udp_target
-        port: $udp_port
+    #- script.execute:
+    #    id: send_udp
+    #    msg: $udp_message
+    #    host: $udp_target
+    #    port: $udp_port
     - light.addressable_set:
         id: led_strip
         range_from: 0
