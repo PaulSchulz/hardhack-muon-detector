@@ -5,11 +5,11 @@ substitutions:
   project_name: "hardhack.muon-detector"
   project_version: "1.0"
 
-  udp_target: "10.1.1.255"
-  udp_port: "5000"
-  udp_message: "Ping"
+#  udp_target: "10.1.1.255"
+#  udp_port: "5000"
+#  udp_message: "Ping"
 
-  led_strip_num: "10"
+  led_strip_num: "120"
 
 esphome:
   name: "${name}"
@@ -75,11 +75,11 @@ script:
         id(muon_counter_int) += 1;
         // Force the sensor to publish a new state
         id(muon_counter).publish_state(id(muon_counter_int));
-    - script.execute:
-        id: send_udp
-        msg: $udp_message
-        host: $udp_target
-        port: $udp_port
+#    - script.execute:
+#        id: send_udp
+#        msg: $udp_message
+#        host: $udp_target
+#        port: $udp_port
     - light.addressable_set:
         id: led_strip
         range_from: 0
@@ -123,15 +123,15 @@ button:
           // Force the sensor to publish a new state
           id(muon_counter).publish_state(id(muon_counter_int));
           
-  - platform: template
-    id: button_udp_sender
-    name: "Send UDP Test"
-    on_press:
-      - script.execute:
-          id: send_udp
-          msg: $udp_message
-          host: $udp_target
-          port: $udp_port
+#  - platform: template
+#    id: button_udp_sender
+#    name: "Send UDP Test"
+#    on_press:
+#      - script.execute:
+#          id: send_udp
+#          msg: $udp_message
+#          host: $udp_target
+#          port: $udp_port
 
   - platform: template
     id: button_led_test

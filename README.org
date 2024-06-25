@@ -7,6 +7,12 @@
 
 * Background
 
+[[file:images/muon-detector-3.jpg]]
+
+[[file:images/muon-detector.jpg]]
+
+[[file:images/muon-detector-1.jpg]]
+
 The Hardhack Muon Detector project has created a muon detector kit based on a
 coincidence detection circuit using twin Geiger–Müller tubes.
 
