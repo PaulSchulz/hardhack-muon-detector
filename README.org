@@ -11,15 +11,15 @@
 
 [[file:images/muon-detector.jpg]]
 
-[[file:images/muon-detector-1.jpg]]
+[[file:images/muon-detector-2.jpg]]
 
 The Hardhack Muon Detector project has created a muon detector kit based on a
 coincidence detection circuit using twin Geiger–Müller tubes.
 
 The output is a 3.3V pulse, between 2.6 to 8 uS.
 
-This repository contains support code and documentation for connecting the sensor to the rest
-of the connencted world.
+This repository contains code for ESPHome to program a Heltec Wireless Stick Lite V3
+for connecting this sensor to the rest of the IoT world.
 
 * Interface Board Examples
 
@@ -34,5 +34,5 @@ communication outside of Wifi range.
 - esphome/secrets.yaml :: Contains Wifi, API,  Over the Air (OTA) update details. Edit these
   to what you are using.
 
-This build requires that the ESPbuild system is installed and available.
+This build requires that the ESPHome build system is installed and available.
 
