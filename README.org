@@ -30,9 +30,16 @@ includes Wireless and Bluetooth. The board also contains a LoRa transceiver for
 communication outside of Wifi range.
 
 *** Files
-- esphome/esp32s3-muon-detector.yaml :: Configuration file and program for the muon detector. 
-- esphome/secrets.yaml :: Contains Wifi, API,  Over the Air (OTA) update details. Edit these
-  to what you are using.
+- esphome/esp32s3-muon-detector-led.yaml :: Configuration file and program for
+  the muon detector. This version supports external LED strip light (WS2812
+  based).
+  
+- esphome/esp32s3-muon-detector-v2.yaml :: Configuration file and program for
+  the muon detector with support for dual input channels (GPIO1, GPIO2) for
+  separate measurement of muon and background counts. 
+
+- esphome/secrets.yaml :: Contains Wifi, API, Over the Air (OTA) update details.
+  Edit these to what you are using.
 
 This build requires that the ESPHome build system is installed and available.
 
