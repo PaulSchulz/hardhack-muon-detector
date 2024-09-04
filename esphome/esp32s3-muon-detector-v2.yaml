@@ -117,7 +117,6 @@ sensor:
           id: trigger_muon
     total:
       name: Total Muons
-    timeout: 2s
 
   - platform: template
     name: "Background Counter"
@@ -139,4 +138,3 @@ sensor:
           id: trigger_background
     total:
       name: Total Background
-    timeout: 2s
