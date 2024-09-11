@@ -6,7 +6,7 @@
   - [[#heltec-wireless-stick-lite-v3-using-esphome][Heltec Wireless Stick Lite V3, using ESPHome]]
 
 * Background
-For more details about Cosmic Rays and the muon detector hardware, see: https://cosmicray.au/
+For more details about Cosmic Rays and the muon detector hardware, see: https://cosmicray.com.au
 
 [[file:images/muon-detector-3.jpg]]
 
