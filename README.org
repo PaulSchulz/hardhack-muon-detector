@@ -9,14 +9,18 @@
 
 [[file:images/muon-detector-3.jpg]]
 
-[[file:images/muon-detector.jpg]]
+o[[file:images/muon-detector.jpg]]
 
 [[file:images/muon-detector-2.jpg]]
 
 The Hardhack Muon Detector project has created a muon detector kit based on a
 coincidence detection circuit using twin Geiger–Müller tubes.
 
-The output is a 3.3V pulse, between 2.6 to 8 uS.
+The output is a 3.3V pulse, between 2.6 to 8 uS. A regular ESP based
+microcontroller board can be used to count or perform some other action when
+registering a pulse.
+
+[[file:images/muon-background-counter.jpeg]]
 
 This repository contains code for ESPHome to program a Heltec Wireless Stick Lite V3
 for connecting this sensor to the rest of the IoT world.
