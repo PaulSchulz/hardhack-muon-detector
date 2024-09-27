@@ -1,3 +1,12 @@
+# Hardhack: Cosmic Ray Muon Detector
+substitutions:
+  name: muon-detector
+  friendly_name: "Hardhack Muon Detector"
+  project_name: "hardhack.muon-detector"
+  project_version: "2.0"
+  led_strip_num: "2"
+
+##############################################################################
 esphome:
   name: "esp32s3-muon-detector-v2"
 
@@ -73,11 +82,65 @@ display:
     address: 0x3C
     # auto_clear_enabled: false
     lambda: |-
-      it.print(0,  2, id(roboto_10), "Muons");
+      it.print( 0,  2, id(roboto_10), "Muons");
+      it.print(82,  2, id(roboto_10), "Events/m");
       it.printf(0, 10, id(roboto_16), "%08d %5.1f", id(muon_cnt), id(muon_event_rate).state);
       
       it.print(0, 32, id(roboto_10), "Background");
       it.printf(0, 40, id(roboto_16), "%08d %5.1f", id(background_cnt), id(background_event_rate).state);
+
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: RGB
+    pin: GPIO7
+    num_leds: ${led_strip_num}
+    # num_leds: 8
+    rmt_channel: 0
+    chipset: WS2812
+    name: "Light"
+    id: led_strip
+    default_transition_length: 0s
+    restore_mode: ALWAYS_ON
+    on_turn_on:
+      - light.turn_on:
+          id: led_strip
+          effect: "Shower"
+    effects:
+      - addressable_scan:
+      - addressable_lambda:
+          name: "Off"
+          lambda: |-
+            it.all().fade_to_black(10);
+      - addressable_lambda:
+          name: "Shower"
+          update_interval: 16ms
+          lambda: |-
+            // it.size() - Number of LEDs
+            // it[num] - Access the LED at index num.
+            // Set the LED at num to the given r, g, b values
+            // it[num] = Color(r, g, b);
+            // Get the color at index num (Color instance)
+            // it[num].get();
+
+            // To reset static when stopping and starting the effect
+            // again you can use the initial_run variables
+            if (initial_run) {
+              // progress = 0;
+              it.all() = Color::BLACK;
+              // it[0] = Color::random_color();
+            }
+
+            // Example: Simple color wipe
+            for (int i = it.size() - 1; i > 0; i--) {
+              it[i] = it[i - 1].get();
+              it[i-1] = Color(0,0,0);
+            }
+
+            // Bonus: use .range() and .all() to set many LEDs without having to write a loop.
+            // it.range(0, 50) = Color::BLACK;
+            // it.all().fade_to_black(10);
+
+
 
 script:
   - id: trigger_muon
@@ -87,7 +150,7 @@ script:
           id(muon_cnt) += 1;
           // Force the sensor to publish a new state
           //id(muon_event_rate).publish_state(id(muon_cnt));
-
+          
   - id: trigger_background
     then:
       - lambda: |-
@@ -95,6 +158,14 @@ script:
           id(background_cnt) += 1;
           // Force the sensor to publish a new state
           //id(background_event_rate).publish_state(id(background_cnt));
+
+      - light.addressable_set:
+          id: led_strip
+          range_from: 0
+          range_to: 1
+          red: 0%
+          green: 0%
+          blue: 100%
 
 sensor:
   - platform: template
