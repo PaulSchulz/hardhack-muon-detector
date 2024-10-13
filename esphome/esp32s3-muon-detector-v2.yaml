@@ -149,6 +149,7 @@ script:
     then:
       - lambda: |-
           id(muon_cnt) += 1;
+          if (id(muon_cnt) > 99999999) id(muon_cnt) = 0;
           
       - light.addressable_set:
           id: led_strip
@@ -174,6 +175,7 @@ script:
     then:
       - lambda: |-
           id(background_cnt) += 1;
+          if (id(background_cnt) > 99999999) id(background_cnt) = 0;
       #- component.update: muon_display
 
 sensor:
